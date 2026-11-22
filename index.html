@@ -81,6 +81,7 @@
           <a class="btn ghost" href="agent-manifest.json">agent-manifest.json</a>
           <a class="btn ghost" href="notice_desk.network.json">notice_desk.network.json</a>
           <a class="btn ghost" href="links.json">links.json</a>
+          <a class="btn ghost" href="conformance.html">Conformance page</a>
         </div>
       </div>
     </section>
@@ -135,7 +136,7 @@
             <button class="ghost" id="clear-plan">Clear</button>
           </div>
         </div>
-        <p class="section-sub">Closes ${plan.deadline} · ${plan.items.length} dates · ${plan.documents.length} documents</p>
+        <p class="section-sub">Official closing date <strong>${plan.deadline}</strong> · ${plan.items.length} dates · ${plan.documents.length} documents. The steps below are preparation dates this desk suggests, not dates the notice itself sets.</p>
         <ol>
           ${plan.items.map((i) => `<li><strong>${i.due} — ${i.label}</strong><span>${i.detail}</span></li>`).join("")}
         </ol>

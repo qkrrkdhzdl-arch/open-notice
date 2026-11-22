@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Conformance — Open Notice</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .cf table { width: 100%; border-collapse: collapse; font-size: 14px; background: #fff; }
+    .cf th, .cf td { border: 1px solid var(--line); padding: 8px 10px; vertical-align: top; text-align: left; }
+    .cf th { background: #f4f1ea; font-weight: 600; }
+    .cf code { font-size: 12.5px; }
+    .cf h2 { margin-top: 28px; }
+    .ok { color: #1f5c46; font-weight: 600; }
+    .gap { color: #8a3b12; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <header class="site">
+    <div class="wrap">
+      <div class="brand"><span class="mark">ON</span> Open Notice</div>
+      <nav class="site"><a href="./">Back to the desk</a></nav>
+    </div>
+  </header>
+
+  <main class="wrap cf">
+    <section class="hero">
+      <h1>Conformance — Worldwide Agentic Web MVP 0.3</h1>
+      <p class="lead">Each requirement of the specification, where this site satisfies it, and how you can check it yourself. Nothing here is a claim about a server: the whole site is the static folder you are browsing.</p>
+    </section>
+
+    <h2>Published files</h2>
+    <table>
+      <tr><th>File</th><th>What it holds</th><th>Link</th></tr>
+      <tr><td><code>agent-manifest.json</code></td><td>Network name, <code>front_man</code>, path to the resolved network, default router, theme, linking exports, action module</td><td><a href="agent-manifest.json">open</a></td></tr>
+      <tr><td><code>notice_desk.network.json</code></td><td>Both agents with instructions, invocation schemas and tools — data only, no includes or substitutions</td><td><a href="notice_desk.network.json">open</a></td></tr>
+      <tr><td><code>links.json</code></td><td>Peer-network link map (no peers in this network)</td><td><a href="links.json">open</a></td></tr>
+      <tr><td><code>agent-mcp.json</code>, <code>.well-known/open-notice.json</code>, <code>.well-known/open-notice-agent.json</code></td><td>Discovery files, written by the build from the manifest</td><td><a href="agent-mcp.json">agent-mcp</a> · <a href=".well-known/open-notice.json">well-known</a></td></tr>
+      <tr><td><code>bridge/action-bridge.html</code>, <code>bridge/bridge-actions.js</code></td><td>The reads another agent site gets when it calls this network</td><td><a href="bridge/action-bridge.html">open</a></td></tr>
+      <tr><td><code>runtime/</code></td><td>The reference nsdeploy static runtime, unmodified</td><td><a href="runtime/README.md">README</a></td></tr>
+    </table>
+
+    <h2>Requirement by requirement</h2>
+    <table>
+      <tr><th>Specification requirement</th><th>Where it is satisfied</th><th>How to check</th></tr>
+      <tr><td>Portable network: Neuro SAN data model, resolved, data-only</td><td><code>notice_desk.network.json</code> — two agents, each with <code>function</code>, <code>instructions</code>, <code>tools</code></td><td>Open the file; no <code>include</code>, no <code>${…}</code> substitution</td></tr>
+      <tr><td>Front agent named in the manifest</td><td><code>agent-manifest.json → networks[0].front_man = "notice_desk"</code></td><td>Compare with the network's first agent</td></tr>
+      <tr><td>Browser execution: parse, validate, delegate, tool calls, bounded history</td><td><code>runtime/</code> loaded by <code>site.js</code>; failure of any step leaves the page usable</td><td>The assistant panel and the agent graph on the desk page</td></tr>
+      <tr><td>Pluggable inference: site router or visitor BYOK</td><td>Manifest <code>llm_router</code>; ⚙ AI model settings takes a provider URL, model and key; the network carries only <code>llm_config.model_name</code></td><td>Open the settings panel; the key stays in the visitor's browser</td></tr>
+      <tr><td>Site actions: name, purpose, schema, effect, handler; refuse before changing state</td><td><code>site-actions.v2.js</code> wraps the page's own functions in <code>script.js</code>; reads are <code>read</code>, the rest are <code>write</code> and reversible on the page</td><td>Developer panel → “5 website actions connected”</td></tr>
+      <tr><td>Reporting outcomes: a tool result is not a business outcome</td><td>Every action returns the page state or <code>{ok:false, reason}</code>; the network's grounding rules tell the agent to repeat the refusal</td><td>Ask for a notice id that does not exist</td></tr>
+      <tr><td>Publication: public GET, CORS enabled, manifest at the site base</td><td>GitHub Pages with <code>Access-Control-Allow-Origin: *</code> on every public file</td><td><code>curl -I https://qkrrkdhzdl-arch.github.io/open-notice/agent-manifest.json</code></td></tr>
+      <tr><td>Trust boundary: no private context across agents or peers; writes stay on the origin</td><td>No <code>sly_data</code> in the network; <code>allowed_peers: []</code>; the bridge shares reads only</td><td><code>links.json</code>, manifest <code>peer_policy</code>, <code>bridge/bridge-actions.js</code></td></tr>
+      <tr><td>Consent before contacting another origin</td><td>No partner network is called by this one; the runtime's consent card is still the only path for a peer call</td><td>—</td></tr>
+    </table>
+
+    <h2>What this page does not claim</h2>
+    <table>
+      <tr><th>Item</th><th>Status</th></tr>
+      <tr><td>Live model run in the demo</td><td><span class="gap">Not shown.</span> The page needs the visitor's own key; the build and the page behaviour were verified without one, and the demo video says so.</td></tr>
+      <tr><td>Partner network call</td><td><span class="gap">Not implemented.</span> This network calls no peer; the bridge is what makes it callable by others.</td></tr>
+      <tr><td>Real notices</td><td><span class="gap">No.</span> All three notices are samples marked <code>SAMPLE</code>, with simplified amounts. Nothing is filed from this page.</td></tr>
+      <tr><td>Server-side agent execution</td><td><span class="gap">None.</span> Static hosting only, by design of the profile.</td></tr>
+    </table>
+
+    <p class="section-sub" style="margin-top:24px">Built for the Open Agentic Web Challenge. Source: <a href="https://github.com/qkrrkdhzdl-arch/open-notice">github.com/qkrrkdhzdl-arch/open-notice</a>.</p>
+  </main>
+</body>
+</html>
