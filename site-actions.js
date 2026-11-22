@@ -113,3 +113,8 @@ class SiteActions {
 }
 
 export { SiteActions };
+
+/** The runtime calls this export when the manifest's actions.module loads. */
+export function registerActions(actions) {
+  SiteActions.registerActions(actions);
+}
