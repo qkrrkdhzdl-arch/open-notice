@@ -46,7 +46,10 @@
       {
         "network": "notice_desk",
         "front_man": "notice_desk",
-        "aliases": ["notice_desk", "notice_desk"],
+        "aliases": [
+          "notice_desk",
+          "notice_desk"
+        ],
         "url": "notice_desk"
       }
     ],
@@ -65,7 +68,7 @@
   },
   "actions": {
     "version": 1,
-    "module": "./site-actions.js",
+    "module": "./site-actions.js?v=2",
     "bridge": "./bridge/action-bridge.html",
     "agentTools": [
       "get_site_state",
