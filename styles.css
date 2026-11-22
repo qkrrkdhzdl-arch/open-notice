@@ -1,0 +1,115 @@
+/* Open Notice — a small public-notice desk.
+   Paper-warm palette, one column, readable at 360px. */
+
+:root {
+  --paper: #faf7f1;
+  --card: #ffffff;
+  --ink: #1d232b;
+  --muted: #5f6b7a;
+  --line: #e2dbcf;
+  --accent: #1f5c46;
+  --accent-ink: #ffffff;
+  --warn: #8a3b12;
+  --warn-bg: #fdf1e6;
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); }
+
+.wrap { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+
+header.site {
+  border-bottom: 1px solid var(--line);
+  background: rgba(250, 247, 241, 0.92);
+  position: sticky; top: 0; z-index: 20;
+  backdrop-filter: blur(6px);
+}
+
+header.site .wrap {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 62px;
+}
+
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -0.01em; }
+
+.brand .mark {
+  width: 26px; height: 26px; border-radius: 8px;
+  background: var(--accent); color: var(--accent-ink);
+  display: grid; place-items: center; font-size: 14px; font-weight: 700;
+}
+
+nav.site a { margin-left: 18px; font-size: 14px; color: var(--muted); text-decoration: none; }
+nav.site a:hover { color: var(--ink); }
+
+.hero { padding: 54px 0 26px; }
+.hero h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(30px, 5vw, 46px);
+  line-height: 1.15; margin: 0 0 14px; letter-spacing: -0.015em;
+}
+.hero p.lead { font-size: 18px; color: var(--muted); max-width: 640px; margin: 0 0 18px; }
+.hero .meta { font-size: 13px; color: var(--muted); }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 0; }
+
+.chip {
+  font-size: 12px; padding: 4px 10px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--card); color: var(--muted);
+}
+.chip.sample { background: var(--warn-bg); border-color: #f0d7c2; color: var(--warn); }
+
+section.block { padding: 26px 0; }
+
+h2.section {
+  font-family: Georgia, serif; font-size: 24px; margin: 0 0 6px; letter-spacing: -0.01em;
+}
+p.section-sub { color: var(--muted); margin: 0 0 18px; font-size: 15px; }
+
+.notice-list { display: grid; gap: 14px; }
+
+.notice {
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 18px 18px 16px;
+}
+.notice h3 { margin: 0 0 6px; font-size: 18px; letter-spacing: -0.01em; }
+.notice .issuer { font-size: 13px; color: var(--muted); margin: 0 0 10px; }
+.notice dl { display: grid; grid-template-columns: 92px 1fr; gap: 4px 12px; margin: 0 0 12px; font-size: 14px; }
+.notice dt { color: var(--muted); }
+.notice dd { margin: 0; }
+.notice .row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+button, .btn {
+  font: inherit; font-size: 14px; font-weight: 600;
+  padding: 8px 14px; border-radius: 10px; cursor: pointer;
+  border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink);
+}
+button.ghost, .btn.ghost { background: transparent; color: var(--accent); }
+button:disabled { opacity: 0.5; cursor: default; }
+
+.plan { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
+.plan.empty { color: var(--muted); }
+.plan ol { margin: 0; padding-left: 22px; }
+.plan li { margin: 0 0 10px; }
+.plan li strong { display: block; }
+.plan li span { color: var(--muted); font-size: 14px; }
+.plan .plan-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; align-items: center; margin-bottom: 12px; }
+.plan .plan-head h3 { margin: 0; font-size: 17px; }
+
+.footnote { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding: 22px 0 40px; }
+.footnote p { margin: 0 0 8px; }
+
+/* Assistant section: see assistant.css for runtime-specific styles. */
+#assistant { border-top: 1px solid var(--line); padding: 26px 0 40px; }

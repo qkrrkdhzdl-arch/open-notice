@@ -1,0 +1,7 @@
+{
+  "protocol": "open-notice-agent-mcp/v1",
+  "network": "notice_desk",
+  "front_man": "notice_desk",
+  "available": false,
+  "reason": "This is a static bundle; a public MCP facade requires an application host."
+}

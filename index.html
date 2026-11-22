@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Open Notice — public notices turned into a plan</title>
+  <meta name="description" content="A small open agentic website: read a public notice, get a dated checklist, and hand the same agents to any other site." />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="assistant.css" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header class="site">
+    <div class="wrap">
+      <div class="brand"><span class="mark">ON</span> Open Notice</div>
+      <nav class="site">
+        <a href="#notices">Notices</a>
+        <a href="#plan">My plan</a>
+        <a href="#assistant">Assistant</a>
+        <a href="#how">How it works</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <h1>A public notice, read once and turned into dates.</h1>
+      <p class="lead">
+        Notices are written for the office that issues them. This desk reads one with you,
+        lists the documents it actually asks for, and turns the closing date into a dated
+        checklist you can keep.
+      </p>
+      <div class="chips">
+        <span class="chip sample">Sample notices — figures simplified</span>
+        <span class="chip">Runs in your browser</span>
+        <span class="chip">Your key, your model</span>
+        <span class="chip">Agents published as JSON</span>
+      </div>
+    </section>
+
+    <section class="block" id="notices">
+      <h2 class="section">Notices on this desk</h2>
+      <p class="section-sub">Three sample records. Each one keeps its documents, its conditions and a closing date.</p>
+      <div class="notice-list" id="notice-list"></div>
+    </section>
+
+    <section class="block" id="plan">
+      <h2 class="section">My plan</h2>
+      <p class="section-sub">Built from a notice. Dates are counted back from the closing date, so the plan stays correct after a week away.</p>
+      <div class="plan empty" id="plan-panel">No plan yet. Build one from a notice above, or ask the assistant.</div>
+    </section>
+
+    <section id="assistant" class="assistant" aria-labelledby="assistant-heading">
+      <h2 id="assistant-heading">Ask Open Notice</h2>
+      <p>It reads the notices on this desk, builds a dated checklist, and exports the dates to your calendar.</p>
+      <p class="assistant-note">Your messages and this page's data go to the LLM provider you choose in the settings below. You confirm anything that cannot be undone before it happens.</p>
+      <p id="assistant-status" role="status">Connecting the assistant… If this message stays, the assistant could not load. You can still use the page directly.</p>
+      <div id="agent-app">
+        <div data-ns-slot="header"></div>
+        <div class="assistant-panels">
+          <div data-ns-slot="chat"></div>
+          <div data-ns-slot="agents"></div>
+        </div>
+        <div data-ns-slot="settings"></div>
+      </div>
+    </section>
+
+    <section class="block" id="how">
+      <h2 class="section">How this stays open</h2>
+      <p class="section-sub">The agents are a public JSON file, and the runtime is a plain ES module in this folder.</p>
+      <div class="notice">
+        <h3>Published, not hidden</h3>
+        <p class="issuer">agent-manifest.json · notice_desk.network.json · links.json</p>
+        <p>
+          Any site can fetch this desk's agent network and run it in its own visitor's browser,
+          with that visitor's model and key. Nothing about the notice desk needs a server of its own.
+          A second network on this site, <code>deadline_planner</code>, is published the same way and is
+          called by the desk when a plan needs ordering across several notices.
+        </p>
+        <div class="row">
+          <a class="btn ghost" href="agent-manifest.json">agent-manifest.json</a>
+          <a class="btn ghost" href="notice_desk.network.json">notice_desk.network.json</a>
+          <a class="btn ghost" href="deadline_planner.network.json">deadline_planner.network.json</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footnote">
+    <div class="wrap">
+      <p>Open Notice is a demonstration desk. The notices are samples marked SAMPLE, with simplified amounts; they are not official publications and cannot be submitted anywhere.</p>
+      <p>Built as a static site for the Open Agentic Web Challenge. Runtime: the reference nsdeploy browser runtime, unmodified, in <code>runtime/</code>.</p>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { App } from "./script.js";
+
+    const listEl = document.getElementById("notice-list");
+    const planEl = document.getElementById("plan-panel");
+
+    function renderNotices() {
+      const state = App.page.getState();
+      listEl.innerHTML = state.notices.map((n) => `
+        <article class="notice">
+          <h3>${n.title}</h3>
+          <p class="issuer">${n.issuer}</p>
+          <dl>
+            <dt>Closes</dt><dd>${n.deadline}</dd>
+            <dt>Support</dt><dd>${n.award}</dd>
+            <dt>Who</dt><dd>${n.who}</dd>
+            <dt>Documents</dt><dd>${n.documentCount}</dd>
+          </dl>
+          <div class="row">
+            <button data-build="${n.id}">Build my plan</button>
+            <button class="ghost" data-open="${n.id}">Read the full notice</button>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function renderPlan() {
+      const plan = App.page.getState().plan;
+      if (!plan) {
+        planEl.className = "plan empty";
+        planEl.textContent = "No plan yet. Build one from a notice above, or ask the assistant.";
+        return;
+      }
+      planEl.className = "plan";
+      planEl.innerHTML = `
+        <div class="plan-head">
+          <h3>${plan.noticeTitle}</h3>
+          <div class="row">
+            <button id="export-ics">Add the dates to my calendar</button>
+            <button class="ghost" id="clear-plan">Clear</button>
+          </div>
+        </div>
+        <p class="section-sub">Closes ${plan.deadline} · ${plan.items.length} dates · ${plan.documents.length} documents</p>
+        <ol>
+          ${plan.items.map((i) => `<li><strong>${i.due} — ${i.label}</strong><span>${i.detail}</span></li>`).join("")}
+        </ol>
+        <p class="section-sub">Documents: ${plan.documents.join(" · ")}</p>
+      `;
+      document.getElementById("export-ics").addEventListener("click", () => {
+        const result = App.page.exportCalendar();
+        if (result.ok === false) alert(result.reason);
+      });
+      document.getElementById("clear-plan").addEventListener("click", () => {
+        App.page.clearPlan();
+        renderPlan();
+      });
+    }
+
+    listEl.addEventListener("click", (event) => {
+      const build = event.target.closest("[data-build]");
+      const open = event.target.closest("[data-open]");
+      if (build) {
+        const result = App.page.buildPlan(build.dataset.build);
+        if (result.ok === false) alert(result.reason);
+        renderPlan();
+        document.getElementById("plan").scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      if (open) {
+        const found = App.page.getNotice(open.dataset.open);
+        if (found.ok === false) return;
+        const n = found.notice;
+        const body = [
+          n.title,
+          "",
+          n.issuer,
+          `Closes: ${n.deadline}`,
+          `Support: ${n.award}`,
+          `Who: ${n.who}`,
+          "",
+          "Documents:",
+          ...n.documents.map((d) => `- ${d}`),
+          "",
+          "Steps:",
+          ...n.steps.map((s) => `- ${s.label} (${s.daysBefore} days before the close): ${s.detail}`),
+        ].join("\n");
+        alert(body);
+      }
+    });
+
+    renderNotices();
+    renderPlan();
+  </script>
+  <script type="module" src="site.js"></script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+{
+  "brand": "Open Notice Assistant",
+  "networks": [
+    {
+      "name": "notice_desk",
+      "front_man": "notice_desk",
+      "hocon": "./notice_desk.network.json",
+      "description": "Reads the public notices on this desk, explains who they are for and what they ask for, and turns a closing date into a dated checklist.",
+      "tags": [
+        "agentified-website",
+        "public-service",
+        "open-agentic-web"
+      ],
+      "sample_queries": [
+        "What does the storefront trial grant ask me to bring?",
+        "Build me a plan for the closure support notice.",
+        "Which of these notices closes first, and what should I do this week?",
+        "Can you file the application for me?"
+      ]
+    }
+  ],
+  "llm_router": {
+    "base_url": "https://api.otari.ai/api/v1",
+    "mock": false,
+    "byok_router": "https://api.otari.ai/api/v1"
+  },
+  "allowed_peers": [],
+  "peer_policy": {
+    "mode": "closed",
+    "deny_origins": [],
+    "note": "Local agents and page-local actions only."
+  },
+  "agent_mcp": {
+    "protocol": "open-notice-agent-mcp/v1",
+    "network": "notice_desk",
+    "front_man": "notice_desk",
+    "available": false,
+    "reason": "This is a static bundle; a public MCP facade requires an application host."
+  },
+  "theme": {
+    "primary": "#1f5c46"
+  },
+  "linking": {
+    "protocol": "open-notice-link/v1",
+    "exports": [
+      {
+        "network": "notice_desk",
+        "front_man": "notice_desk",
+        "aliases": ["notice_desk", "notice_desk"],
+        "url": "notice_desk"
+      }
+    ],
+    "imports": [],
+    "link_updates": {
+      "mode": "browser-local"
+    }
+  },
+  "deployment": {
+    "mode": "static",
+    "self_contained_runtime": true,
+    "browser_mock": false,
+    "direct_byok": true,
+    "direct_mcp_requires_cors": true,
+    "public_mcp_facade": false
+  },
+  "actions": {
+    "version": 1,
+    "module": "./site-actions.js",
+    "bridge": "./bridge/action-bridge.html",
+    "agentTools": [
+      "get_site_state",
+      "get_notice",
+      "build_plan",
+      "export_calendar",
+      "clear_plan"
+    ]
+  }
+}
