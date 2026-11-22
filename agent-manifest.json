@@ -68,7 +68,7 @@
   },
   "actions": {
     "version": 1,
-    "module": "./site-actions.js?v=2",
+    "module": "./site-actions.v2.js",
     "bridge": "./bridge/action-bridge.html",
     "agentTools": [
       "get_site_state",
