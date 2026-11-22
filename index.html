@@ -6,7 +6,7 @@
   <title>Open Notice — public notices turned into a plan</title>
   <meta name="description" content="A small open agentic website: read a public notice, get a dated checklist, and hand the same agents to any other site." />
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="assistant.css" />
+  <link rel="stylesheet" href="assistant.css?v=3" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
 </head>
 <body>
@@ -74,13 +74,13 @@
         <p>
           Any site can fetch this desk's agent network and run it in its own visitor's browser,
           with that visitor's model and key. Nothing about the notice desk needs a server of its own.
-          A second network on this site, <code>deadline_planner</code>, is published the same way and is
-          called by the desk when a plan needs ordering across several notices.
+          Other agentic sites can also call this desk through the action bridge the build wrote into
+          <code>bridge/</code>, and get the reads it shares there.
         </p>
         <div class="row">
           <a class="btn ghost" href="agent-manifest.json">agent-manifest.json</a>
           <a class="btn ghost" href="notice_desk.network.json">notice_desk.network.json</a>
-          <a class="btn ghost" href="deadline_planner.network.json">deadline_planner.network.json</a>
+          <a class="btn ghost" href="links.json">links.json</a>
         </div>
       </div>
     </section>
@@ -185,6 +185,17 @@
     renderNotices();
     renderPlan();
   </script>
-  <script type="module" src="site.js"></script>
+  <script>
+    // Surface a load error instead of an empty panel while the static runtime boots.
+    window.addEventListener("error", function (event) {
+      var el = document.getElementById("assistant-status");
+      if (el) el.textContent = "The assistant could not load (" + (event.message || "script error") + "). You can still use the page directly.";
+    });
+    window.addEventListener("unhandledrejection", function (event) {
+      var el = document.getElementById("assistant-status");
+      if (el) el.textContent = "The assistant could not load (" + ((event.reason && event.reason.message) || event.reason) + "). You can still use the page directly.";
+    });
+  </script>
+  <script type="module" src="site.js?v=3"></script>
 </body>
 </html>
